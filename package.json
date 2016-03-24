@@ -1,0 +1,27 @@
+{
+  "name": "generator-notebook",
+  "version": "0.0.0",
+  "description": "notebook  skeleton",
+  "homepage": "",
+  "author": {
+    "name": "ssddi456",
+    "email": "torrent88410@gmail.com"
+  },
+  "files": [
+    "generators"
+  ],
+  "main": "generators\\index.js",
+  "keywords": [
+    "notebook",
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "yeoman-generator": "^0.21.1",
+  },
+  "repository": "/generator-notebook",
+  "scripts": {
+    "prepublish": "gulp prepublish",
+    "test": "gulp"
+  },
+  "license": "MIT"
+}
