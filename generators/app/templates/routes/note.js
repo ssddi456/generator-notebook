@@ -26,30 +26,44 @@ router.post('/add',function( req, res, next ) {
 
 router.post('*',function( req, res, next ) {
   var id = req.body.id;
-  if( storage.get(id) ){
-    next();
-  } else {
+  storage.get( id, function(err ,res ) {
+    if( err )    {
+      next(err);
+      return;
+    }
+    if( res ){
+      next();
+      return;
+    }
     res.json({
       error : 1,
       message : 'note not found'
     });
-  }
+  });
 });
 
 router.post('/remove',function( req, res, next ) {
-  if(storage.remove(req.body.id)){
-    res.json({
-      error : 0
-    });
-  } else {
-    res.json({
-      error : 1,
-      message: 'remove failed'
-    });
-  }
+  storage.remove(req.body.id, function(err) {
+    if( !err ){
+      res.json({
+        error : 0
+      });
+    } else {
+      res.json({
+        error : 1,
+        message: 'remove failed'
+      });
+    }
+  });
 });
 
 router.post('/save',function( req, res, next ) {
+  var note = {};
+  for(var k in req.body){
+    if( k != 'id' && req.body.hasOwnProperty(k) ){
+      note[k] = req.body[k];
+    }
+  }
 
   storage.update(req.body.id, note, function(err) {
     if( err ){
@@ -126,19 +140,21 @@ router.post('/exec',function( req, res, next ) {
             message : e.message + '\n' + e.stack
           });
         } else {
-          note.res = _res;
-          if( storage.update(note_id, note) ){
-            res.json({
-              error : 0,
-              res : _res
-            });
-          } else{
-            res.json({
-              error : 1,
-              message:'res save failed',
-              res : _res
-            });
-          }
+          var note = { res : _res };
+          storage.update(note_id, note, function(err) {
+            if( !err ){
+              res.json({
+                error : 0,
+                res : _res
+              });
+            } else{
+              res.json({
+                error : 1,
+                message:'res save failed',
+                res : _res
+              });
+            }
+          });
         }
       });
   });

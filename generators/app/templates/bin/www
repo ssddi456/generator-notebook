@@ -3,6 +3,7 @@
 /**
  * Module dependencies.
  */
+process.env.DEBUG = '*';
 
 var cluster = require('cluster');
 
@@ -21,7 +22,6 @@ if (cluster.isMaster) {
   });
   return;
 }
-
 
 var app = require('../app');
 var debug = require('debug')('node_js_notebook:server');

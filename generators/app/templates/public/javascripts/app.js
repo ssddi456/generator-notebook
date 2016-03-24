@@ -21,7 +21,7 @@ require([
     });
 
   function doc_to_note( doc  ) {
-    var new_note = new note(doc.id);
+    var new_note = new note(doc._id);
     new_note.name(doc.name);
     new_note.code( decodeURIComponent(doc.code));
     new_note.res(doc.res);
@@ -62,7 +62,10 @@ require([
     }
   };
 
-  vm.notes()[0].fold(false);
+  var first;
+  if ( first = vm.notes()[0] ){
+    first.fold(false);
+  }
 
   ko.applyBindings(vm);
 });

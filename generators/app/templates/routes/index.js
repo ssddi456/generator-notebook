@@ -4,6 +4,7 @@ var storage = require('../lib/storage');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+
   storage.get_all(function(err, notes) {
     if( err )  {
       next(err);

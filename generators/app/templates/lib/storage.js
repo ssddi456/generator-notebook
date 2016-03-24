@@ -25,7 +25,7 @@ module.exports = {
   },
 
   get_all : function( done ) {
-    storage.find(done);
+    storage.find({}, done);
   },
 
   update : function( id, data, done ){
