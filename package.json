@@ -10,18 +10,14 @@
   "files": [
     "generators"
   ],
-  "main": "generators\\index.js",
+  "main": "generators/index.js",
   "keywords": [
     "notebook",
     "yeoman-generator"
   ],
   "dependencies": {
-    "yeoman-generator": "^0.21.1",
+    "yeoman-generator": "^0.21.1"
   },
-  "repository": "/generator-notebook",
-  "scripts": {
-    "prepublish": "gulp prepublish",
-    "test": "gulp"
-  },
+  "repository": "https://github.com/ssddi456/generator-notebook.git",
   "license": "MIT"
 }
