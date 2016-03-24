@@ -1,4 +1,4 @@
-# generator-notebook [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# generator-notebook [![NPM version][npm-image]][npm-url]
 > notebook  skeleton
 
 ## Installation
