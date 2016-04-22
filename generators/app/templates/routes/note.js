@@ -83,18 +83,43 @@ router.post('/save',function( req, res, next ) {
 var child_process = require('child_process');
 var code_cache_path = path.join(__dirname,'../data/code_cache');
 
+function process_mac (code) {
+  var records = 0;
+  return  code.replace(/(?:\n)\s*note_exec\s*\((.*)\)/g, function($, $code ) {
+            return '\nconsole.log(\''  + (++records) + ' : ' + $code.replace(/(['"])/g,'\\\\$1') + '\');\n'
+                  +'console.log('+ $code +');\n';
+          })
+          .replace(/(?:\n)\s*mongo_exec\s*\((.*)\)/g, function($, $code ) {
+            return '\nprint(\'---- '  + (++records) + ' : ' + $code.replace(/(['"])/g,'\\\\$1') + ' ----\');\n'
+                  + 'printjson('+ $code +');\n'
+                  + 'print(\'---- '  + (records) + ' end  ----\');\n';
+          });
+}
+
+var globals = fs.readFileSync(path.join(__dirname, './globals.js'),'utf8');
+
+function generate_temp_file( code ) {
+  var tmp_file_name = path.join(code_cache_path, uuid() + '.js');
+  code = globals + '\n' + code;
+  fs.writeFileSync(tmp_file_name, code);
+  return tmp_file_name;
+    
+}
+function run_as_node ( file ) {
+  return child_process.fork(file, { silent : true});
+}
+
+function run_as_mongo ( file ) {
+  return child_process.spawn('d:/Program Files/MongoDB/Server/3.2/bin/mongo.exe', [file]);
+}
+
 function exec_code ( code, done ) {
   try{
-    var tmp_file_name = path.join(code_cache_path, uuid() + '.js');
-    var records = 0;
+    code = process_mac(code);
 
-    code = code.replace(/(?:\n)\s*note_exec\s*\((.*)\)/g, function($, $code ) {
-        return '\nconsole.log(\''  + (++records) + ' : ' + $code.replace(/(['"])/g,'\\\\$1') + '\');\n'
-              +'console.log('+ $code +');\n';
-    });
+    var tmp_file_name = generate_temp_file(code);
 
-    fs.writeFileSync(tmp_file_name, code);
-    var cp = child_process.fork(tmp_file_name,{ silent : true});
+    var cp = run_as_mongo(tmp_file_name);
   } catch(e){
     return done(e);
   }

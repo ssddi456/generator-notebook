@@ -2,7 +2,7 @@ extends layout
 append css
   style.
     body{
-      background-color: #E6F0F1;
+      background-color: #F4FAFB;
     }
     .editor{
       height : 400px;
@@ -21,7 +21,7 @@ block content
   .navbar.navbar-static-top
     .container
       .navbar-brand(style="color:white")
-        | note booke
+        | note book 
         span(data-bind="click:restart")
           i.glyphicon.glyphicon-refresh
 
@@ -33,6 +33,18 @@ block content
           button.btn.btn-primary(data-bind="click:add_note")
             | add note
   hr.navhr
+  .container
+    h3 notebook
+    p
+      | use
+      code note_exec
+      | or
+      code mongo_exec
+      | for better output trace 
+    pre !{global_code}
+
+  hr
+
   +ko('foreach : notes')
     +ko('if : visible')
       .container(data-bind="ifnot : fold")

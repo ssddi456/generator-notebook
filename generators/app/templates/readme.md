@@ -7,3 +7,4 @@ why this?
 * jsbin : not node
 * ipython : failed when install zmq on windows
 
+support node and mongo
