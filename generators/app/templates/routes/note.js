@@ -138,7 +138,7 @@ function run_as_node ( file ) {
 }
 
 function run_as_mongo ( file ) {
-  return child_process.spawn('d:/Program Files/MongoDB/Server/3.2/bin/mongo.exe', [file]);
+  return child_process.spawn('<%- props.mongo_shell_path %>', [file]);
 }
 
 function exec_code ( code, done ) {
@@ -147,7 +147,7 @@ function exec_code ( code, done ) {
 
     var tmp_file_name = generate_temp_file(code);
 
-    var cp = run_as_mongo(tmp_file_name);
+    var cp = run_as_<%- props.env_type%>(tmp_file_name);
   } catch(e){
     return done(e);
   }
