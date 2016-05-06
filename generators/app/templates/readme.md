@@ -3,8 +3,6 @@ node notebook
 
 why this?
 
-* gist : no res
-* jsbin : not node
-* ipython : failed when install zmq on windows
+now support node and mongo.
 
-support node and mongo
+sense tool template.

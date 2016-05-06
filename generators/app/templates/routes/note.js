@@ -4,6 +4,8 @@ var util = require('util');
 var fs = require('fs');
 var router = express.Router();
 
+var debug = require('debug')('router/notes');
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -24,18 +26,21 @@ router.post('/add',function( req, res, next ) {
   });
 });
 
-router.post('*',function( req, res, next ) {
+router.post('*',function( req, resp, next ) {
   var id = req.body.id;
-  storage.get( id, function(err ,res ) {
+  storage.get( id, function(err, res ) {
     if( err )    {
       next(err);
       return;
     }
+
     if( res ){
+      resp.locals.note = res;
       next();
       return;
     }
-    res.json({
+
+    resp.json({
       error : 1,
       message : 'note not found'
     });
@@ -59,6 +64,7 @@ router.post('/remove',function( req, res, next ) {
 
 router.post('/save',function( req, res, next ) {
   var note = {};
+
   for(var k in req.body){
     if( k != 'id' && req.body.hasOwnProperty(k) ){
       note[k] = req.body[k];
@@ -80,6 +86,29 @@ router.post('/save',function( req, res, next ) {
 });
 
 
+var bootstrap = '';
+storage.get_bootstrap(function(err, node ) {
+  if( err ){
+    debug('get bootstrap code failed', err );
+    return;
+  }
+  bootstrap = decodeURIComponent(node.code);
+});
+
+router.post('/save_bootstrap', function( req, res, done ) {
+  var code = req.body.code;
+  if( !code ){
+    return done(new Error('code note given'));
+  }
+  storage.update_bootstrap( code, function(err) {
+    if( err ){ return done(err); }
+    bootstrap = decodeURIComponent(req.body.code);
+    debug('code changed!');
+
+    res.json({ error : 0 });
+  });
+});
+
 var child_process = require('child_process');
 var code_cache_path = path.join(__dirname,'../data/code_cache');
 
@@ -96,11 +125,10 @@ function process_mac (code) {
           });
 }
 
-var globals = fs.readFileSync(path.join(__dirname, './globals.js'),'utf8');
 
 function generate_temp_file( code ) {
   var tmp_file_name = path.join(code_cache_path, uuid() + '.js');
-  code = globals + '\n' + code;
+  code = bootstrap + '\n' + code;
   fs.writeFileSync(tmp_file_name, code);
   return tmp_file_name;
     
@@ -127,6 +155,8 @@ function exec_code ( code, done ) {
   var stdout = [];
   var stderr = [];
   var exceptions = [];
+  var exports = [];
+
   var out = {};
 
   cp.stdout.on('data',function( chunk ) {
@@ -146,7 +176,7 @@ function exec_code ( code, done ) {
     out.stderr = Buffer.concat(stderr).toString();
     out.exceptions = exceptions;
     out.code = code;
-    fs.unlinkSync(tmp_file_name);
+    fs.unlink(tmp_file_name);
     done(null, out);
   });
 }

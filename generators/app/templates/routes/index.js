@@ -13,23 +13,27 @@ if( debug_name == 'index'){
 
 var fs = require('fs');
 var debug = require('debug')(debug_name);
-var globals = fs.readFileSync(path.join(__dirname, './globals.js'),'utf8');
-
+var async = require('async');
 /* GET home page. */
 router.get('/', function(req, res, next) {
 
-  storage.get_all(function(err, notes) {
-    if( err )  {
-      next(err);
-      return;
+  async.auto({
+    init_bootstrap : function( done, res ) {
+      storage.get_bootstrap(done);
+    },
+    init_notes : function( done, res ) {
+      storage.get_all(done);
+    }
+  }, function( err, notes_info ) {
+    if(err){
+      return next(err);
     }
     res.render('index', { 
       title: 'Node Note', 
-      notes: notes,
-      global_code: globals
+      notes: notes_info.init_notes,
+      bootstrap: notes_info.init_bootstrap
     });
-  })
-
+  });
 });
 
 module.exports = router;
