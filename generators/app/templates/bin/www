@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-process.env.DEBUG = '*';
+process.env.DEBUG = '* -send -express:*';
 
 var cluster = require('cluster');
 
