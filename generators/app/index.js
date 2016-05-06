@@ -27,19 +27,17 @@ module.exports = yeoman.Base.extend({
 
         return props.env_type == 'mongo';
       },
-      validate: function(value) {
-        try{
-          var stat = fs.statSync(value);
-        } catch(e){
-          return e.message;
-        }
-
-        if( stat.isDirectory() ){
-          return 'input path is a directory';
-        }
-
-        return true;
-      }
+      // validate: function(value) {
+      //   try{
+      //     var stat = fs.statSync(value);
+      //   } catch(e){
+      //     return e.message;
+      //   }
+      //   if( stat.isDirectory() ){
+      //     return 'input path is a directory';
+      //   }
+      //   return true;
+      // }
     }];
 
     var done = this.async();
