@@ -47,3 +47,13 @@
 .bs-callout-info h4 {
     color: #1b809e
 }
+
+
+hr{
+    margin-top: 0; 
+    margin-bottom: 0; 
+}
+.form-group{
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
