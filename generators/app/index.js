@@ -38,6 +38,31 @@ module.exports = yeoman.Base.extend({
       //   }
       //   return true;
       // }
+    },
+    {
+      type : 'input',
+      name : 'server_user_name',
+      message : '登录名',
+      validate : function( value ) {
+        if( value.length < 6 || value.length > 12 ){
+          return '登录名长度应当在6-12位之间';
+        }
+        if( value.indexOf(':') != -1 ){
+          return '登录名不应当包含 : ';
+        }
+        return true
+      }
+    },
+    {
+      type : 'input',
+      name : 'server_user_pass',
+      message : '密码',
+      validate : function( value ) {
+        if( value.length < 6 || value.length > 12 ){
+          return '密码长度应当在6-12位之间';
+        }
+        return true
+      }
     }];
 
     var done = this.async();

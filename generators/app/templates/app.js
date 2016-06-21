@@ -21,6 +21,39 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+var credentialsRegExp = /^ *basic +([a-z0-9\-\._~\+\/]+=*) *$/i
+
+app.use(function( req, resp, next ) {
+  function failed() {
+    resp.set('WWW-Authenticate', 'Basic realm="User Visible Realm"');
+    resp.sendStatus(401);
+  }
+  function decodeBase64(str) {
+    return new Buffer(str, 'base64').toString()
+  }
+  var headers = req.headers;
+  if( !headers.authorization ){
+    return failed();
+  }
+  var match = headers.authorization.match(credentialsRegExp);
+  if( !match ){
+    return failed()
+  }
+  var authorization = decodeBase64(match[1]);
+
+  var spliter = authorization.indexOf(':');
+
+  var user = authorization.slice(0, spliter);
+  var pass = authorization.slice(spliter + 1);
+
+  if( "<%- props.server_user_name%>" != user 
+    || "<%- props.server_user_pass%>" != pass 
+  ){
+    return failed();
+  }
+
+  next();
+});
 
 app.use('/', routes);
 app.use('/note', note);
