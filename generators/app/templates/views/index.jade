@@ -51,7 +51,7 @@ block content
     .container-fluid
       .navbar-header(style="color:white")
         .navbar-brand
-          | note booke  
+          | note book
           span(data-bind="click:restart")
             i.glyphicon.glyphicon-refresh
       .nav.navbar-nav.navbar-right
@@ -98,8 +98,6 @@ block content
               .col-xs-12
                 +ko("ifnot : fold")
                   .editor(data-bind="editor")
-                +ko('if : fold')
-                  pre(data-bind="text:code")
 
         hr
         .container-fluid(data-bind='foreach : notes')

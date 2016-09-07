@@ -58,7 +58,7 @@ var _storage = module.exports = {
       updates.code = data
     }
 
-    updates.timestamp = '' + Date.now();
+    updates.timestamp = Date.now();
     storage.update({ _id : id }, { $set : updates }, done);
   },
 
